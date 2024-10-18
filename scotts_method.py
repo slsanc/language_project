@@ -9,7 +9,6 @@ class ScottsMethod:
         self.common_words = self.load_wordlist(wordlist_path)
 
     def load_wordlist(self, wordlist_path):
-        """Load the list of common words"""
         with open(wordlist_path, 'r') as f:
             return set(word.strip().lower() for word in f.readlines())
 

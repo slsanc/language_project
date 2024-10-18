@@ -17,6 +17,9 @@ def load_essays(csv_path):
 
 # Function to save results to a CSV file
 def save_results_to_csv(results, output_path):
+    """
+
+    """
     with open(output_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Method', 'Essay A', 'Essay B', 'Similarity Score'])
