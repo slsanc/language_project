@@ -3,12 +3,14 @@ class Method2:
     @staticmethod
     def calc_word_frequencies(unique_words, text1_arr, text2_arr):
         """Calculate how frequently words appear in the essays."""
-        list_frequencies_1 = []
+        list_frequencies_1 = np.empty()
         list_frequencies_2 = []
+
         for word in unique_words:
             list_frequencies_1.append(text1_arr.count(word))
             list_frequencies_2.append(text2_arr.count(word))
-            return list_frequencies_1, list_frequencies_2
+
+        return list_frequencies_1, list_frequencies_2
 
     @staticmethod
     def calc_similarity_score(vector_1, vector_2):
@@ -38,7 +40,7 @@ class Method2:
         text1_arr, text2_arr = Method2.text_to_words(text1, text2)
 
         # Combine the words from both lists of words into a unique list.
-        unique_words = list(set(text1_arr + text2_arr))
+        unique_words = np.array(set(text1_arr + text2_arr))
 
         # Compare each list of words to the unique words to check the frequency of the words in each list
         text1_vector, text2_vector = Method2.calc_word_frequencies(unique_words, text1_arr, text2_arr)

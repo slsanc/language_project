@@ -36,7 +36,7 @@ def main():
     results = {}  # Results for each method
 
     # Create an instance of the class that uses Method 1 (Scott's Method) to compare texts.
-    method1 = ScottsMethod(WORDLIST_PATH)
+    ScottsMethod.load_wordlist(WORDLIST_PATH)
 
     method1_results = {}
     method2_results = {}
@@ -51,13 +51,13 @@ def main():
                 essay_a_text = essays[essay_a_id]
                 essay_b_text = essays[essay_b_id]
 
-                method1_results[(essay_a_id, essay_b_id)] = method1.compare_texts(essay_a_text, essay_b_text)
-                method2_results[(essay_a_id, essay_b_id)] = Method2.compare_texts(essay_a_text, essay_b_text)
+                method1_results[(essay_a_id, essay_b_id)] = ScottsMethod.compare_texts(essay_a_text, essay_b_text)
+                # method2_results[(essay_a_id, essay_b_id)] = Method2.compare_texts(essay_a_text, essay_b_text)
                 # method3_results[(essay_a_id, essay_b_id)] = Method3.compare_texts(essay_a_text, essay_b_text)
 
     # Store Method1 results
     results['Method1'] = method1_results
-    results['Method2'] = method2_results
+    # results['Method2'] = method2_results
     # results['Method3'] = method3_results
 
 
