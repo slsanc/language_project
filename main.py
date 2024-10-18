@@ -28,16 +28,18 @@ def save_results_to_csv(results, output_path):
 
 
 def main():
-    # Load essays
-    essays = load_essays(DATA_PATH)
+    """
+    Using each method, compare each essay to every other essay.
+    """
+    essays = load_essays(DATA_PATH) # Load essays from the csv file
+    results = {} # results for each method
 
-    # Dictionary to store results for each method
-    results = {}
-
-    # Initialize Method1
+    # Create an instance of the class that uses Method 1 (Scott's Method) to compare texts.
+    # Feed it the list of 100 most common words.
     method1 = Method1(WORDLIST_PATH)
+    # method2 = Method2()
 
-    # Prepare results for Method1
+    # Each of the following dictionaries will hold all the results for one of the methods used.
     method1_results = {}
 
     # Compare each pair of essays
@@ -45,7 +47,12 @@ def main():
         for j, essay_b in enumerate(essays):
             if i != j:  # Avoid comparing an essay with itself
                 similarity_score = method1.compare_texts(essay_a, essay_b)
+
                 method1_results[(f'Essay {i + 1}', f'Essay {j + 1}')] = similarity_score
+                # method2_results[(f'Essay {i + 1}', f'Essay {j + 1}')] = similarity_score
+                # method3_results[(f'Essay {i + 1}', f'Essay {j + 1}')] = similarity_score
+                # method4_results[(f'Essay {i + 1}', f'Essay {j + 1}')] = similarity_score
+                # method5_results[(f'Essay {i + 1}', f'Essay {j + 1}')] = similarity_score
 
     # Store Method1 results
     results['Method1'] = method1_results
