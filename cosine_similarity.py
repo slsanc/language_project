@@ -1,6 +1,7 @@
 import numpy as np
 class Method2:
-    def compare_texts(self, text1, text2):
+    @staticmethod
+    def compare_texts(text1, text2):
         text1_arr = text1.split()
         text2_arr = text2.split()
 
@@ -19,7 +20,7 @@ class Method2:
         text2_vector_np = np.array(text2_vector)
 
         # Calculations
-        similarity_score = pwtpwt
+        similarity_score = 5
 
         # Return the similarity score.
         return similarity_score
