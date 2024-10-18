@@ -5,21 +5,52 @@ from nltk.corpus import wordnet as wn
 
 class ScottsMethod:
     def __init__(self, wordlist_path):
-        # Load the common words (stop words)
+        # Load the common words
         self.common_words = self.load_wordlist(wordlist_path)
 
     def load_wordlist(self, wordlist_path):
-        """Load the list of common words"""
-        with open(wordlist_path, 'r') as f:
-            return set(word.strip().lower() for word in f.readlines())
+        """
+        Load the wordlist.
+
+        For more information on why this wordslist is needed, see the
+        documentation for `remove_common_words()`
+
+        :param wordlist_path:
+        :return:
+        """
+        with open(wordlist_path, 'r') as file:
+            return set(word.strip().lower() for word in file.readlines())
 
     def remove_common_words(self, text):
-        """Remove common words from the text"""
+        """
+        Remove the most common English words from the texts.
+
+        This is done because the most common words in a text are unlikely to
+        give the text much of its meaning. This makes them irrelevant to an
+        analysis of text similarity. We may safely remove them.
+
+        This also makes the analysis faster and easier, because we are reducing
+        the size of the inputs to the analysis.
+
+        :param text: The text from which the words should be removed
+        :return:
+        """
         words = text.split()
         return [word for word in words if word.lower() not in self.common_words]
 
     def replace_with_synonyms(self, text):
-        """Replace medium-frequency words with their most common synonym"""
+        """
+        Replace medium-frequency words with their most common synonym. This is
+        done so that two texts are reported as similar - even if one has had
+        several words swapped with synonyms.
+
+        :param text:
+            The text whose medium-frequency words should be swapped with their
+            most common synonyms.
+        :return:
+            The input text, with its medium-frequency words replaced by their
+            most common synonym.
+        """
         words = text.split()
         synonym_replaced = []
         for word in words:
