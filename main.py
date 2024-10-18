@@ -1,5 +1,5 @@
 import pandas as pd
-from method_1 import Method1
+from scotts_method import ScottsMethod
 import os
 import csv
 
@@ -36,7 +36,7 @@ def main():
 
     # Create an instance of the class that uses Method 1 (Scott's Method) to compare texts.
     # Feed it the list of 100 most common words.
-    method1 = Method1(WORDLIST_PATH)
+    method1 = ScottsMethod(WORDLIST_PATH)
     # method2 = Method2()
 
     # Each of the following dictionaries will hold all the results for one of the methods used.
