@@ -3,7 +3,7 @@ from collections import Counter
 import nltk
 from nltk.corpus import wordnet as wn
 
-class Method1:
+class ScottsMethod:
     def __init__(self, wordlist_path):
         # Load the common words (stop words)
         self.common_words = self.load_wordlist(wordlist_path)
