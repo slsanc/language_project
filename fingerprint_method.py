@@ -65,7 +65,7 @@ class FingerprintMethod:
         return (2 * intersection_absolute_value) / (len(set_a) + len(set_b))
 
     @staticmethod
-    def compare_documents(text_a, text_b):
+    def compare_texts(text_a, text_b):
         """
         Compare two documents and compute their similarity using the fingerprint method.
 

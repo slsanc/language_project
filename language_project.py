@@ -1,6 +1,7 @@
 import pandas as pd
 
 from cosine_similarity import Method2
+from fingerprint_method import FingerprintMethod
 from scotts_method import ScottsMethod
 import os
 import csv
@@ -40,7 +41,7 @@ def main():
 
     method1_results = {}
     method2_results = {}
-    # method3_results = {}
+    method3_results = {}
 
 
     essay_ids = list(essays.keys())  # List of essay IDs
@@ -53,12 +54,12 @@ def main():
 
                 method1_results[(essay_a_id, essay_b_id)] = ScottsMethod.compare_texts(essay_a_text, essay_b_text)
                 # method2_results[(essay_a_id, essay_b_id)] = Method2.compare_texts(essay_a_text, essay_b_text)
-                # method3_results[(essay_a_id, essay_b_id)] = Method3.compare_texts(essay_a_text, essay_b_text)
+                method3_results[(essay_a_id, essay_b_id)] = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
 
     # Store Method1 results
     results['Method1'] = method1_results
     # results['Method2'] = method2_results
-    # results['Method3'] = method3_results
+    results['Method3'] = method3_results
 
 
     # Save all results to CSV
