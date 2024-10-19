@@ -8,7 +8,8 @@ class Method2:
         for word in unique_words:
             list_frequencies_1.append(text1_arr.count(word))
             list_frequencies_2.append(text2_arr.count(word))
-            return list_frequencies_1, list_frequencies_2
+
+        return list_frequencies_1, list_frequencies_2
 
     @staticmethod
     def calc_similarity_score(vector_1, vector_2):
