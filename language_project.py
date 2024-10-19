@@ -1,4 +1,7 @@
 import pandas as pd
+from timeit import default_timer as timer
+
+from nltk.metrics.aline import similarity_matrix
 
 from cosine_similarity import Method2
 from fingerprint_method import FingerprintMethod
@@ -22,32 +25,37 @@ def normalize_data(results):
     :param results:
     :return:
     """
-    max_value = max(results.values())
-    min_value = min(results.values())
+    all_scores = [measurement[1] for measurement in results.values()]
+    max_value = max(all_scores)
+    min_value = min(all_scores)
 
     if max_value == min_value:
         # If all values are the same, normalize them to 1.0. We do this
         # manually, because running the calculation would require dividing by
         # zero.
         for key in results:
-            results[key] = 1.0
+            time_taken, similarity_score = results[key]
+            results[key] = (time_taken, 1)
     else:
         # Otherwise, apply the Min-Max normalization formula
         for key in results:
-            results[key] = (results[key] - min_value) / (max_value - min_value)
+            time_taken, similarity_score = results[key]
 
+            normalized_score = (similarity_score - min_value) / (max_value - min_value)
+            results[key] = (time_taken, normalized_score)
 
 
 # Function to save results to a CSV file
 def save_results_to_csv(results, output_path):
     with open(output_path, mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['Method', 'Essay A ID', 'Essay B ID', 'Similarity Score'])
+        writer.writerow(['Method', 'Essay A ID', 'Essay B ID', 'Time Taken', 'Similarity Score'])
 
         for method_name, method_results in results.items():
-            for pair, similarity_score in method_results.items():
+            for pair, measurement in method_results.items():
                 essay_a_id, essay_b_id = pair
-                writer.writerow([method_name, essay_a_id, essay_b_id, similarity_score])
+                time_taken, similarity_score = measurement
+                writer.writerow([method_name, essay_a_id, essay_b_id, time_taken, similarity_score])
 
 
 def main():
@@ -67,21 +75,40 @@ def main():
 
     essay_ids = list(essays.keys())  # List of essay IDs
 
+
+
     # Compare each pair of essays based on their essay IDs
     for i, essay_a_id in enumerate(essay_ids):
         for essay_b_id in essay_ids[i + 1:]:  # Compare only with essays after essay_a_id
                 essay_a_text = essays[essay_a_id]
                 essay_b_text = essays[essay_b_id]
 
-                method1_results[(essay_a_id, essay_b_id)] = ScottsMethod.compare_texts(essay_a_text, essay_b_text)
-                # method2_results[(essay_a_id, essay_b_id)] = Method2.compare_texts(essay_a_text, essay_b_text)
-                method3_results[(essay_a_id, essay_b_id)] = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
+                start = timer()
+                similarity_score_1 = ScottsMethod.compare_texts(essay_a_text, essay_b_text)
+                end = timer()
+                time_taken = end - start
+                method1_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score_1)
+
+                start = timer()
+                similarity_score_2 = Method2.compare_texts(essay_a_text, essay_b_text)
+                end = timer()
+                time_taken = end - start
+                method2_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score_2)
+
+                start = timer()
+                similarity_score_3 = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
+                end = timer()
+                time_taken = end - start
+                method3_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score_3)
+
+
+
 
     normalize_data(method1_results)
 
     # Store Method1 results
     results['Method1'] = method1_results
-    # results['Method2'] = method2_results
+    results['Method2'] = method2_results
     results['Method3'] = method3_results
 
 
