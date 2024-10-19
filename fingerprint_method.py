@@ -67,9 +67,9 @@ class FingerprintMethod:
     @staticmethod
     def compare_texts(text_a, text_b):
         """
-        Compare two documents and compute their similarity using the fingerprint method.
+        Compare the documents using the fingerprint method.
 
-        :return: The Dice Coefficient similarity score
+        :return: The similarity score (i.e. The Dice Coefficient)
         """
         # Generate and hash n-grams for both documents
         n_grams_a = FingerprintMethod.generate_n_grams(text_a)

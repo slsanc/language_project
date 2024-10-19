@@ -16,6 +16,27 @@ def load_essays(csv_path):
     df = pd.read_csv(csv_path)
     return dict(zip(df['essay_id'], df['full_text']))  # Returns a dictionary {essay_id: full_text}
 
+def normalize_data(results):
+    """
+    Normalize results to a range between 0 and 1.
+    :param results:
+    :return:
+    """
+    max_value = max(results.values())
+    min_value = min(results.values())
+
+    if max_value == min_value:
+        # If all values are the same, normalize them to 1.0. We do this
+        # manually, because running the calculation would require dividing by
+        # zero.
+        for key in results:
+            results[key] = 1.0
+    else:
+        # Otherwise, apply the Min-Max normalization formula
+        for key in results:
+            results[key] = (results[key] - min_value) / (max_value - min_value)
+
+
 
 # Function to save results to a CSV file
 def save_results_to_csv(results, output_path):
@@ -55,6 +76,8 @@ def main():
                 method1_results[(essay_a_id, essay_b_id)] = ScottsMethod.compare_texts(essay_a_text, essay_b_text)
                 # method2_results[(essay_a_id, essay_b_id)] = Method2.compare_texts(essay_a_text, essay_b_text)
                 method3_results[(essay_a_id, essay_b_id)] = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
+
+    normalize_data(method1_results)
 
     # Store Method1 results
     results['Method1'] = method1_results
