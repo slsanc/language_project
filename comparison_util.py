@@ -1,22 +1,6 @@
-import hashlib
+import re
 
 class ComparisonUtil:
-    @staticmethod
-    def hash_words(words_arr):
-        """
-        Hash each word in the given list using MD5, and return the resulting
-        hashes.
-
-        This lets us convert the text from a list of strings to a list
-        of integers. This, in turn, makes the data easier for the computer
-        to process.
-
-        Return:
-            array of string:
-                A list of hash values corresponding to the given list of words
-        """
-        return [int(hashlib.md5(word.encode('utf-8')).hexdigest(), 16) for word in words_arr]
-
     @staticmethod
     def clean_text(text):
         """
@@ -34,6 +18,8 @@ class ComparisonUtil:
         Returns:
             str: The text, cleaned as described above.
         """
+        if not isinstance(text, str):
+            print("asdf")
         # Keep only alphanumeric characters, spaces, and newlines.
         cleaned_text = re.sub(r"[^a-zA-Z0-9'\s\n]", "", text)
 

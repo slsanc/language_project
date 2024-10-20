@@ -1,8 +1,6 @@
 import pandas as pd
 from timeit import default_timer as timer
 
-from nltk.metrics.aline import similarity_matrix
-
 from cosine_similarity import Method2
 from fingerprint_method import FingerprintMethod
 from scotts_method import ScottsMethod
@@ -10,9 +8,10 @@ import os
 import csv
 
 # Paths
-DATA_PATH = './resources/data/test.csv'
+DATA_PATH = './resources/data/train2.csv'
 OUTPUT_PATH = './output/similarity_results.csv'
-WORDLIST_PATH = './resources/common_words.txt'
+FUNCTION_WORDLIST_PATH = 'resources/words_lists/function_words.txt'
+CORE_VOCAB_WORDLIST_PATH = 'resources/words_lists/core_vocab_words.txt'
 
 # Function to load essays from the CSV (returns a dictionary with essay_id as keys and full_text as values)
 def load_essays(csv_path):
@@ -66,16 +65,13 @@ def main():
     results = {}  # Results for each method
 
     # Create an instance of the class that uses Method 1 (Scott's Method) to compare texts.
-    ScottsMethod.load_wordlist(WORDLIST_PATH)
+    ScottsMethod.load_wordlists(FUNCTION_WORDLIST_PATH, CORE_VOCAB_WORDLIST_PATH)
 
     method1_results = {}
     method2_results = {}
     method3_results = {}
 
-
     essay_ids = list(essays.keys())  # List of essay IDs
-
-
 
     # Compare each pair of essays based on their essay IDs
     for i, essay_a_id in enumerate(essay_ids):
