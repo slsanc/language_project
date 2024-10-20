@@ -1,10 +1,12 @@
-import hashlib
+
 
 """
 This class compares the similarities of two texts by using the fingerprint method.
 
 Made for CS5300
 """
+from comparison_util import ComparisonUtil
+
 
 class FingerprintMethod:
     N_GRAM_SIZE = 4  # Class-level constant for n-gram size
@@ -26,19 +28,6 @@ class FingerprintMethod:
         text = text.replace(" ", "")
         n_grams = [text[i:i + FingerprintMethod.N_GRAM_SIZE] for i in range(len(text) - FingerprintMethod.N_GRAM_SIZE + 1)]
         return n_grams
-
-    @staticmethod
-    def hash_n_grams(n_grams):
-        """
-        Hash each n-gram using MD5 and return the sequence of hashes.
-
-        This lets us convert the text from a list of strings to a list
-        of integers. This, in turn, makes the data easier for the computer
-        to process.
-
-        :return: A list of hash values
-        """
-        return [int(hashlib.md5(n_gram.encode('utf-8')).hexdigest(), 16) for n_gram in n_grams]
 
     @staticmethod
     def select_fingerprints(hash_values):
@@ -74,8 +63,8 @@ class FingerprintMethod:
         # Generate and hash n-grams for both documents
         n_grams_a = FingerprintMethod.generate_n_grams(text_a)
         n_grams_b = FingerprintMethod.generate_n_grams(text_b)
-        hash_values_a = FingerprintMethod.hash_n_grams(n_grams_a)
-        hash_values_b = FingerprintMethod.hash_n_grams(n_grams_b)
+        hash_values_a = ComparisonUtil.hash_words(n_grams_a)
+        hash_values_b = ComparisonUtil.hash_words(n_grams_b)
 
         # Select fingerprints
         fingerprints_a = FingerprintMethod.select_fingerprints(hash_values_a)

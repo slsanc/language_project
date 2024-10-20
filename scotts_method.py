@@ -3,6 +3,9 @@ from collections import Counter
 import nltk
 from nltk.corpus import wordnet as wn
 
+from comparison_util import ComparisonUtil
+
+
 class ScottsMethod:
     common_words = None  # Class-level constant for the wordlist
 
@@ -50,8 +53,7 @@ class ScottsMethod:
     @staticmethod
     def paragraph_to_ints(paragraph):
         """Convert each word in the paragraph to an integer"""
-        words = paragraph.split()
-        return [ScottsMethod.hash_word(word) for word in words]
+        return ComparisonUtil.hash_words()
 
     @staticmethod
     def compare_paragraphs(para1, para2):
@@ -71,22 +73,27 @@ class ScottsMethod:
 
     @staticmethod
     def compare_texts(text1, text2):
-        """Main function to compare two texts using the method steps"""
+        """
+        Main function to compare two texts using the method steps
+        """
+        # Step 1: "Clean" the text, converting it to lowercase and removing punctuation.
+        text1 = ComparisonUtil.clean_text(text1)
+
         # Step 1: Remove common words
-        text1_filtered = ScottsMethod.remove_common_words(text1)
-        text2_filtered = ScottsMethod.remove_common_words(text2)
+        text1 = ScottsMethod.remove_common_words(text1)
+        text2 = ScottsMethod.remove_common_words(text2)
 
         # Step 2: Replace medium-frequency words with synonyms
-        text1_synonym_replaced = ScottsMethod.replace_with_synonyms(' '.join(text1_filtered))
-        text2_synonym_replaced = ScottsMethod.replace_with_synonyms(' '.join(text2_filtered))
+        text1 = ScottsMethod.replace_with_synonyms(' '.join(text1))
+        text2 = ScottsMethod.replace_with_synonyms(' '.join(text2))
 
         # Step 3: Split into paragraphs
-        paragraphs1 = ScottsMethod.text_to_paragraphs(' '.join(text1_synonym_replaced))
-        paragraphs2 = ScottsMethod.text_to_paragraphs(' '.join(text2_synonym_replaced))
+        paragraphs1 = ScottsMethod.text_to_paragraphs(' '.join(text1))
+        paragraphs2 = ScottsMethod.text_to_paragraphs(' '.join(text2))
 
         # Step 4: Convert paragraphs into arrays of integers
-        para1_int_arrays = [ScottsMethod.paragraph_to_ints(p) for p in paragraphs1]
-        para2_int_arrays = [ScottsMethod.paragraph_to_ints(p) for p in paragraphs2]
+        para1_int_arrays = [ComparisonUtil.hash_words(paragraph.split()) for paragraph in paragraphs1]
+        para2_int_arrays = [ComparisonUtil.hash_words(paragraph.split()) for paragraph in paragraphs2]
 
         # Step 5: Initial large-scale check (compare most frequent words)
         most_freq_words_1 = ScottsMethod.most_frequent_words(' '.join(text1_filtered))
@@ -99,8 +106,8 @@ class ScottsMethod:
         matching_pairs = 0
         for para1 in para1_int_arrays:
             for para2 in para2_int_arrays:
-                similarity_score = ScottsMethod.compare_paragraphs(para1, para2)
-                if similarity_score > 0:  # You can set a threshold if necessary
+                paragraph_similarity = ScottsMethod.compare_paragraphs(para1, para2)
+                if paragraph_similarity > 0:
                     matching_pairs += 1
 
         return matching_pairs  # The final similarity score

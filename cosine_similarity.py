@@ -2,7 +2,34 @@ import numpy as np
 class Method2:
     @staticmethod
     def calc_word_frequencies(unique_words, text1_arr, text2_arr):
-        """Calculate how frequently words appear in the essays."""
+        """
+        Given the set of all the words from Essay A and Essay B, calculate:
+            * The number of times that each word occurs in essay A
+            * The number of times that each word occurs in essay B
+        And return those frequencies.
+
+        Args:
+            unique_words (list of string):
+                The set of all unique words from Essay A and Essay B.
+
+            text1_arr (list of string): Essay A's words as an array.
+            text2_arr (list of string): Essay B's words as an array.
+
+        Returns:
+            tuple: A tuple containing two lists:
+                - list_frequencies_1 (list of int):
+                    Frequencies of the words in essay A. The position of each
+                    element corresponds to the word at the same location in
+                    `unique_words`.
+
+                    In other words, if `unique_words[5]` were "foo", and if
+                    "foo" occurred 7 times in Essay A, then
+                    `list_frequencies_1[5]` would have a value of 7.
+
+                - list_frequencies_2 (list of int):
+                    Frequencies of the words in the second essay, in the same
+                    format as `list_frequencies_1`.
+        """
         list_frequencies_1 = []
         list_frequencies_2 = []
         for word in unique_words:
@@ -14,9 +41,21 @@ class Method2:
     @staticmethod
     def calc_similarity_score(vector_1, vector_2):
         """
-        Calculate the similarity score using 2 vectors represented as numpy arrays using cosine similarity algorithm
-        """
+        Use the cosine similarity formula to calculate a similarity score
+        between the two vectors.
 
+        Args:
+            vector_1 (numpy.array):
+                The frequency vector of the first essay (for more information
+                on what this is, see the documentation for
+                `calc_word_frequencies()`).
+            vector_2 (numpy.array):
+                The frequency vector of the second essay.
+
+        Returns:
+            float:
+                The similarity score between the two vectors.
+        """
         # Calculate the dot product of the vectors and the magnitude of each vector
         dot_prod_vectors = np.dot(vector_1, vector_2)
         vector_1_magnitude = np.linalg.norm(vector_1)
@@ -28,13 +67,24 @@ class Method2:
 
     @staticmethod
     def text_to_words(essay1, essay2):
-        """Split the texts into lists of words"""
+        """
+        Split the texts into lists of words
+        """
         return essay1.split(), essay2.split()
 
     @staticmethod
     def compare_texts(text1, text2):
-        """Main function to compare two texts using the cosine similarity algorithm"""
+        """
+        Compare two texts using the cosine similarity method.
 
+        Args:
+            text1 (string) : The first text
+            text2 (string) : The second text
+
+        Returns:
+            float:
+                The similarity score between the two texts
+        """
         # Split the essays into two lists containing the words from each essay
         text1_arr, text2_arr = Method2.text_to_words(text1, text2)
 
