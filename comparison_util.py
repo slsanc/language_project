@@ -13,13 +13,11 @@ class ComparisonUtil:
         same word)
 
         Args:
-            text (str): The input text to be cleaned.
+            text (str): The text to be cleaned.
 
         Returns:
             str: The text, cleaned as described above.
         """
-        if not isinstance(text, str):
-            print("asdf")
         # Keep only alphanumeric characters, spaces, and newlines.
         cleaned_text = re.sub(r"[^a-zA-Z0-9'\s\n]", "", text)
 
