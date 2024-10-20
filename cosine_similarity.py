@@ -1,4 +1,7 @@
 import numpy as np
+
+from comparison_util import ComparisonUtil
+
 class Method2:
     @staticmethod
     def calc_word_frequencies(unique_words, text1_arr, text2_arr):
@@ -66,13 +69,6 @@ class Method2:
         return similarity_score
 
     @staticmethod
-    def text_to_words(essay1, essay2):
-        """
-        Split the texts into lists of words
-        """
-        return essay1.split(), essay2.split()
-
-    @staticmethod
     def compare_texts(text1, text2):
         """
         Compare two texts using the cosine similarity method.
@@ -85,8 +81,13 @@ class Method2:
             float:
                 The similarity score between the two texts
         """
+        # Clean the texts before splitting them into words.
+        text1 = ComparisonUtil.clean_text(text1)
+        text2 = ComparisonUtil.clean_text(text2)
+
         # Split the essays into two lists containing the words from each essay
-        text1_arr, text2_arr = Method2.text_to_words(text1, text2)
+        text1_arr = text1.split()
+        text2_arr = text2.split()
 
         # Combine the words from both lists of words into a unique list.
         unique_words = list(set(text1_arr + text2_arr))
