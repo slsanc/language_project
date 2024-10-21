@@ -1,7 +1,7 @@
 import pandas as pd
 from timeit import default_timer as timer
 
-from cosine_similarity import Method2
+from cosine_similarity import CosineSimilarityMethod
 from fingerprint_method import FingerprintMethod
 from semantically_matching_paragraph_counter_method import SmpcMethod
 import os
@@ -106,38 +106,34 @@ def main():
 
     # Compare each pair of essays based on their essay IDs
     for i, essay_a_id in enumerate(essay_ids):
-        for essay_b_id in essay_ids[i + 1:]:  # Compare only with essays after essay_a_id
-                essay_a_text = essays[essay_a_id]
-                essay_b_text = essays[essay_b_id]
+        for essay_b_id in essay_ids[i + 1:]:  # Compare only with essays after essay_a_id to avoid double counting
+            essay_a_text = essays[essay_a_id]
+            essay_b_text = essays[essay_b_id]
 
-                start = timer()
-                similarity_score = SmpcMethod.compare_texts(essay_a_text, essay_b_text)
-                end = timer()
-                time_taken = end - start
-                cosine_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
+            start = timer()
+            similarity_score = SmpcMethod.compare_texts(essay_a_text, essay_b_text)
+            end = timer()
+            time_taken = end - start
+            smpc_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
 
-                start = timer()
-                similarity_score = Method2.compare_texts(essay_a_text, essay_b_text)
-                end = timer()
-                time_taken = end - start
-                fingerprint_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
+            start = timer()
+            similarity_score = CosineSimilarityMethod.compare_texts(essay_a_text, essay_b_text)
+            end = timer()
+            time_taken = end - start
+            cosine_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
 
-                start = timer()
-                similarity_score = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
-                end = timer()
-                time_taken = end - start
-                smpc_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
+            start = timer()
+            similarity_score = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
+            end = timer()
+            time_taken = end - start
+            fingerprint_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
 
+    normalize_data(smpc_method_results)
 
-
-
-    normalize_data(cosine_method_results)
-
-    # Store Method1 results
-    results['Method1'] = cosine_method_results
-    results['Method2'] = fingerprint_method_results
-    results['Method3'] = smpc_method_results
-
+    # Store results
+    results['SMPC'] = smpc_method_results
+    results['Cosine'] = cosine_method_results
+    results['Fingerprint'] = fingerprint_method_results
 
     # Save all results to CSV
     save_results_to_csv(results, OUTPUT_PATH)
