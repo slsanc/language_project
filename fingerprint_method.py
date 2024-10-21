@@ -1,7 +1,7 @@
 """
 This class compares the similarities of two texts by using the fingerprint method.
 
-Made for CS5300.
+Made By Scott Sanchez and Mihir Bhakta for CS5300.
 """
 import hashlib
 

@@ -7,6 +7,19 @@ from semantically_matching_paragraph_counter_method import SmpcMethod
 import os
 import csv
 
+"""
+This program compares each essay in the database with every other essay.
+
+Each pair of essays is compared three times - once with each of the following methods:
+
+    * The Fingerprint Method
+    * The Cosine Similarity Method
+    * The Semantically Matching Paragraph Counter (SMPC) Method
+
+The results are then saved to a CSV file for further analysis.
+
+Made by Scott Sanchez and Mihir Bhakta for CS5300: Introduction to Artificial Intelligence.
+"""
 # Paths
 DATA_PATH = './resources/data/train2.csv'
 OUTPUT_PATH = './output/similarity_results.csv'

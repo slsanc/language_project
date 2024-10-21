@@ -12,7 +12,13 @@ class SmpcMethod:
 
     @classmethod
     def load_wordlists(cls, function_words_path, core_vocab_path):
-        """Load the list of common words as a class-level constant"""
+        """
+        Load:
+            * The list of "function" words
+            * The list of "core vocab" words
+
+        And store each as a class-level constant.
+        """
         if cls.function_words is None:  # Only load it once
             with open(function_words_path, 'r') as f:
                 cls.function_words = set(word.strip().lower() for word in f.readlines())

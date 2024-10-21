@@ -2,6 +2,12 @@ import numpy as np
 
 from comparison_util import ComparisonUtil
 
+"""
+This class compares the similarities of two texts by using the fingerprint method.
+
+Made By Scott Sanchez and Mihir Bhakta for CS5300.
+"""
+
 class Method2:
     @staticmethod
     def calc_word_frequencies(unique_words, text1_arr, text2_arr):
