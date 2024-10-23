@@ -13,9 +13,9 @@ class FingerprintMethod:
     def generate_n_grams(text):
         """
         Convert the given text into a list of n-grams. For instance,
-        "the quick brown fox jumps over the lazy dog" is converted to:
+        "abcdefghijklmnopqrstuvwxyz" is converted to:
 
-            ["theq" , "uick" , "brow" , "nfox" , ... , "ydog"]
+            ["abcd", "bcde", "cdef", ... , "wxyz"]
 
         The default size of an n-gram is 4 letters. This is set by a
         constant above.
