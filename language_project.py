@@ -1,29 +1,56 @@
 import pandas as pd
 from timeit import default_timer as timer
 
-from nltk.metrics.aline import similarity_matrix
-
-from cosine_similarity import Method2
+from cosine_similarity import CosineSimilarityMethod
 from fingerprint_method import FingerprintMethod
-from scotts_method import ScottsMethod
+from semantically_matching_paragraph_counter_method import SmpcMethod
 import os
 import csv
 
-# Paths
-DATA_PATH = './resources/data/test.csv'
-OUTPUT_PATH = './output/similarity_results.csv'
-WORDLIST_PATH = './resources/common_words.txt'
+"""
+This program compares each essay in the database with every other essay.
 
-# Function to load essays from the CSV (returns a dictionary with essay_id as keys and full_text as values)
+Each pair of essays is compared three times - once with each of the following methods:
+
+    * The Fingerprint Method
+    * The Cosine Similarity Method
+    * The Semantically Matching Paragraph Counter (SMPC) Method
+
+The results are then saved to a CSV file for further analysis.
+
+Made by Scott Sanchez and Mihir Bhakta for CS5300: Introduction to Artificial Intelligence.
+"""
+# Paths
+DATA_PATH = './resources/data/train500.csv'
+OUTPUT_PATH = './output/similarity_results_500.csv'
+FUNCTION_WORDLIST_PATH = 'resources/words_lists/function_words.txt'
+CORE_VOCAB_WORDLIST_PATH = 'resources/words_lists/core_vocab_words.txt'
+
 def load_essays(csv_path):
-    df = pd.read_csv(csv_path)
-    return dict(zip(df['essay_id'], df['full_text']))  # Returns a dictionary {essay_id: full_text}
+    """
+    Load essays from a CSV file and return them as a dictionary
+
+    Args:
+        csv_path (str): The path to the CSV file containing the essays.
+
+    Returns:
+        dict:
+            A dictionary whose keys are essay IDs, and whose values are the
+            full texts.
+    """
+    data_file = pd.read_csv(csv_path)
+    return dict(zip(data_file['essay_id'], data_file['full_text']))  # Returns a dictionary {essay_id: full_text}
 
 def normalize_data(results):
     """
-    Normalize results to a range between 0 and 1.
-    :param results:
-    :return:
+    Normalize similarity scores in the results to a range between 0 and 1 using
+    Min-Max normalization.
+
+    Args:
+        results (dict):
+            A dict whose keys are tuples of (essay_id_a,essay_id_b) and whose 
+            values are tuples of (time_taken, similarity_score). The similarity
+            scores will be normalized. All else is left alone.
     """
     all_scores = [measurement[1] for measurement in results.values()]
     max_value = max(all_scores)
@@ -44,9 +71,10 @@ def normalize_data(results):
             normalized_score = (similarity_score - min_value) / (max_value - min_value)
             results[key] = (time_taken, normalized_score)
 
-
-# Function to save results to a CSV file
 def save_results_to_csv(results, output_path):
+    """
+    Save all results to a csv.
+    """
     with open(output_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Method', 'Essay A ID', 'Essay B ID', 'Time Taken', 'Similarity Score'])
@@ -61,56 +89,51 @@ def save_results_to_csv(results, output_path):
 def main():
     """
     Using each method, compare each essay to every other essay.
+
+    Save the results as a csv.
     """
     essays = load_essays(DATA_PATH)  # Load essays as {essay_id: full_text}
     results = {}  # Results for each method
 
-    # Create an instance of the class that uses Method 1 (Scott's Method) to compare texts.
-    ScottsMethod.load_wordlist(WORDLIST_PATH)
+    # Load the wordlists used by the Semantically Matching Paragraph Counter method.
+    SmpcMethod.load_wordlists(FUNCTION_WORDLIST_PATH, CORE_VOCAB_WORDLIST_PATH)
 
-    method1_results = {}
-    method2_results = {}
-    method3_results = {}
-
+    cosine_method_results = {}
+    fingerprint_method_results = {}
+    smpc_method_results = {}
 
     essay_ids = list(essays.keys())  # List of essay IDs
 
-
-
     # Compare each pair of essays based on their essay IDs
     for i, essay_a_id in enumerate(essay_ids):
-        for essay_b_id in essay_ids[i + 1:]:  # Compare only with essays after essay_a_id
-                essay_a_text = essays[essay_a_id]
-                essay_b_text = essays[essay_b_id]
+        for essay_b_id in essay_ids[i + 1:]:  # Compare only with essays after essay_a_id to avoid double counting
+            essay_a_text = essays[essay_a_id]
+            essay_b_text = essays[essay_b_id]
 
-                start = timer()
-                similarity_score_1 = ScottsMethod.compare_texts(essay_a_text, essay_b_text)
-                end = timer()
-                time_taken = end - start
-                method1_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score_1)
+            start = timer()
+            similarity_score = SmpcMethod.compare_texts(essay_a_text, essay_b_text)
+            end = timer()
+            time_taken = end - start
+            smpc_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
 
-                start = timer()
-                similarity_score_2 = Method2.compare_texts(essay_a_text, essay_b_text)
-                end = timer()
-                time_taken = end - start
-                method2_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score_2)
+            start = timer()
+            similarity_score = CosineSimilarityMethod.compare_texts(essay_a_text, essay_b_text)
+            end = timer()
+            time_taken = end - start
+            cosine_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
 
-                start = timer()
-                similarity_score_3 = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
-                end = timer()
-                time_taken = end - start
-                method3_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score_3)
+            start = timer()
+            similarity_score = FingerprintMethod.compare_texts(essay_a_text, essay_b_text)
+            end = timer()
+            time_taken = end - start
+            fingerprint_method_results[(essay_a_id, essay_b_id)] = (time_taken, similarity_score)
 
+    normalize_data(smpc_method_results)
 
-
-
-    normalize_data(method1_results)
-
-    # Store Method1 results
-    results['Method1'] = method1_results
-    results['Method2'] = method2_results
-    results['Method3'] = method3_results
-
+    # Store results
+    results['SMPC'] = smpc_method_results
+    results['Cosine'] = cosine_method_results
+    results['Fingerprint'] = fingerprint_method_results
 
     # Save all results to CSV
     save_results_to_csv(results, OUTPUT_PATH)
