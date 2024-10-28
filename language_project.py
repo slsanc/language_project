@@ -21,8 +21,8 @@ The results are then saved to a CSV file for further analysis.
 Made by Scott Sanchez and Mihir Bhakta for CS5300: Introduction to Artificial Intelligence.
 """
 # Paths
-DATA_PATH = './resources/data/train2.csv'
-OUTPUT_PATH = './output/similarity_results.csv'
+DATA_PATH = './resources/data/train500.csv'
+OUTPUT_PATH = './output/similarity_results_500.csv'
 FUNCTION_WORDLIST_PATH = 'resources/words_lists/function_words.txt'
 CORE_VOCAB_WORDLIST_PATH = 'resources/words_lists/core_vocab_words.txt'
 
